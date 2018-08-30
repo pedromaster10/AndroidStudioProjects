@@ -74,4 +74,24 @@
         android:layout_centerHorizontal="true"
         android:text="Button"
         android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/textScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="37dp"
+        android:layout_marginStart="44dp"
+        android:text="Score: 999"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/textLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/textScore"
+        android:layout_toStartOf="@+id/textPartB"
+        android:text="Level: 4"
+        android:textSize="24sp" />
 </RelativeLayout>

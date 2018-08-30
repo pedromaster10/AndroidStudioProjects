@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Random;
 
 
 public class GameActivity extends Activity implements View.OnClickListener{
@@ -14,89 +17,137 @@ public class GameActivity extends Activity implements View.OnClickListener{
     Button buttonObjectChoice1;
     Button buttonObjectChoice2;
     Button buttonObjectChoice3;
+    TextView textObjectPartA;
+    TextView textObjectPartB;
+    TextView textObjectScore;
+    TextView textObjectLevel;
+
+    int currentScore = 0;
+    int currentLevel = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        //Here we initialize all our variables
-        int partA = 2;
-        int partB = 2;
-        correctAnswer = partA * partB;
-        int wrongAnswer1 = correctAnswer -1;
-        int wrongAnswer2 = correctAnswer +1;
-
         //Aqui sao criados e inicializadas variaveis dos tipos
         // textview e button para que sejam linkados com os elementos
         //que irão aparecer na tela.
 
-        TextView textObjectPartA = (TextView)findViewById(R.id.textPartA);
-        TextView textObjectPartB = (TextView)findViewById(R.id.textPartB);
+        textObjectPartA = (TextView)findViewById(R.id.textPartA);
+        textObjectPartB = (TextView)findViewById(R.id.textPartB);
+        textObjectScore = (TextView)findViewById(R.id.textScore);
+        textObjectLevel = (TextView)findViewById(R.id.textLevel);
+
         buttonObjectChoice1 = (Button)findViewById(R.id.buttonChoice1);
         buttonObjectChoice2 = (Button)findViewById(R.id.buttonChoice2);
         buttonObjectChoice3 = (Button)findViewById(R.id.buttonChoice3);
 
-        //Agora o metodo setText da classe é usado para mostrar os valores
-        //das nossas variaveis nos elementos da interface grafica do app.
-
-        textObjectPartA.setText("" + partA);
-        textObjectPartB.setText("" + partB);
-
-        //Qual objeto recebe qual resposta nesse momento nao importa.
-
-        buttonObjectChoice1.setText("" + correctAnswer);
-        buttonObjectChoice2.setText("" + wrongAnswer1);
-        buttonObjectChoice3.setText("" + wrongAnswer2);
-
-
         buttonObjectChoice1.setOnClickListener(this);
         buttonObjectChoice2.setOnClickListener(this);
         buttonObjectChoice3.setOnClickListener(this);
-
     }
 
     @Override
     public void onClick(View view) {
         //um novo int é declarado para ser usado em todos os cases
-        int answerGiven=0;
+        int answerGiven = 0;
         switch (view.getId()){
 
             case R.id.buttonChoice1:
                 //inicializa a nova variavel int com o valor contido em //buttonObjectChoice1
                 answerGiven = Integer.parseInt("" + buttonObjectChoice1.getText());
 
-                //essa é a resposta correta?
-                if(answerGiven==correctAnswer) {//yay it's the right answer
-                    Toast.makeText(getApplicationContext(), "Parabens, acertou!", Toast.LENGTH_LONG).show();
-                }else{//ops...
-                    Toast.makeText(getApplicationContext(), "Eu sinto muito, esta errado!", Toast.LENGTH_LONG).show();
-                }
+
                 break;
 
             case R.id.buttonChoice2:
                 //inicializa a nova variavel int com o valor contido em //buttonObjectChoice2
                 answerGiven = Integer.parseInt("" + buttonObjectChoice2.getText());
 
-                //essa é a resposta correta?
-                if(answerGiven==correctAnswer) {//yay it's the right answer
-                    Toast.makeText(getApplicationContext(), "Parabens, acertou!", Toast.LENGTH_LONG).show();
-                }else{//ops...
-                    Toast.makeText(getApplicationContext(), "Eu sinto muito, esta errado!", Toast.LENGTH_LONG).show();
-                }
+
                 break;
 
             case R.id.buttonChoice3:
                 //inicializa a nova variavel int com o valor contido em //buttonObjectChoice3
                 answerGiven = Integer.parseInt("" + buttonObjectChoice3.getText());
 
-                //essa é a resposta correta?
-                if(answerGiven==correctAnswer) {//yay it's the right answer
-                    Toast.makeText(getApplicationContext(), "Parabens, acertou!", Toast.LENGTH_LONG).show();
-                }else{//ops...
-                    Toast.makeText(getApplicationContext(), "Eu sinto muito, esta errado!", Toast.LENGTH_LONG).show();
-                }
+
                 break;
         }
+    }
+
+    void setQuestion(){
+
+        //generate the parts of the question
+        int numberRange = currentLevel * 3;
+        Random randInt = new Random();
+
+        int partA = randInt.nextInt(numberRange);
+        partA++; //don't want a zero value
+
+        int partB = randInt.nextInt(numberRange);
+        partB++; //don't want a zero value
+
+        correctAnswer = partA * partB;
+        int wrongAnswer1 = correctAnswer - 2;
+        int wrongAnswer2 = correctAnswer + 2;
+
+        textObjectPartA.setText(""+partA);
+        textObjectPartB.setText(""+partB);
+
+        //set the multi choice buttons
+        //a number between 0 and 2
+        int buttonLayout = randInt.nextInt(3);
+
+        switch (buttonLayout){
+            case 0:
+                buttonObjectChoice3.setText(""+wrongAnswer2);
+                buttonObjectChoice2.setText(""+wrongAnswer1);
+                buttonObjectChoice1.setText(""+correctAnswer);
+            break;
+
+            case 1:
+                buttonObjectChoice1.setText(""+wrongAnswer1);
+                buttonObjectChoice3.setText(""+correctAnswer);
+                buttonObjectChoice2.setText(""+wrongAnswer2);
+            break;
+
+            case 2:
+                buttonObjectChoice2.setText(""+correctAnswer);
+                buttonObjectChoice1.setText(""+wrongAnswer1);
+                buttonObjectChoice3.setText(""+wrongAnswer2);
+            break;
+
+        }
+    }
+
+    void updateScoreAndLevel(int answerGiven){
+        if(isCorrect(answerGiven)){
+            for(int i = 1; i <= currentLevel; i++){
+                currentScore = currentScore + i;
+            }
+
+            currentLevel++;
+        } else {
+            currentScore = 0;
+            currentLevel = 1;
+        }
+
+        //Actually update the two TextViews
+        textObjectScore.setText("Score: " + currentScore);
+        textObjectLevel.setText("Level: " + currentLevel);
+    }
+
+    boolean isCorrect(int answerGiven) {
+        boolean correctTrueOrFalse;
+        if (answerGiven == correctAnswer) {//SIM!
+            Toast.makeText(getApplicationContext(), "Acerto mizeravi!", Toast.LENGTH_SHORT).show();
+            correctTrueOrFalse = true;
+        } else {//Ops..
+            Toast.makeText(getApplicationContext(), "Sorry, ta errado", Toast.LENGTH_SHORT).show();
+            correctTrueOrFalse = false;
+        }
+        return correctTrueOrFalse;
     }
 }
