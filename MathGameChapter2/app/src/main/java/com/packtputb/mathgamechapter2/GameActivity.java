@@ -1,6 +1,7 @@
 package com.packtputb.mathgamechapter2;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -46,6 +47,8 @@ public class GameActivity extends Activity implements View.OnClickListener{
         buttonObjectChoice1.setOnClickListener(this);
         buttonObjectChoice2.setOnClickListener(this);
         buttonObjectChoice3.setOnClickListener(this);
+
+        setQuestion();
     }
 
     @Override
@@ -58,13 +61,11 @@ public class GameActivity extends Activity implements View.OnClickListener{
                 //inicializa a nova variavel int com o valor contido em //buttonObjectChoice1
                 answerGiven = Integer.parseInt("" + buttonObjectChoice1.getText());
 
-
                 break;
 
             case R.id.buttonChoice2:
                 //inicializa a nova variavel int com o valor contido em //buttonObjectChoice2
                 answerGiven = Integer.parseInt("" + buttonObjectChoice2.getText());
-
 
                 break;
 
@@ -72,9 +73,11 @@ public class GameActivity extends Activity implements View.OnClickListener{
                 //inicializa a nova variavel int com o valor contido em //buttonObjectChoice3
                 answerGiven = Integer.parseInt("" + buttonObjectChoice3.getText());
 
-
                 break;
+
         }
+        updateScoreAndLevel(answerGiven);
+        setQuestion();
     }
 
     void setQuestion(){
